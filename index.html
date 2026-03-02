@@ -1,69 +1,75 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Question</title>
+    <title>Urgent Question! ⚠️</title>
     <style>
         body {
-            background-color: #ffe6e6; /* Soft Pink */
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
             overflow: hidden;
+            transition: background 0.3s;
         }
 
         .container {
             text-align: center;
             background: white;
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.5s ease;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            max-width: 450px;
+            position: relative;
+        }
+
+        #main-gif {
+            width: 200px;
+            border-radius: 15px;
+            margin-bottom: 20px;
         }
 
         h1 {
-            color: #ff4d6d;
-            font-size: 2.5rem;
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
         }
 
-        .buttons {
-            margin-top: 30px;
+        .btn-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
+            height: 100px;
         }
 
         button {
             padding: 15px 30px;
             font-size: 1.2rem;
+            font-weight: bold;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s ease-in-out;
         }
 
         #yesBtn {
-            background-color: #ff4d6d;
+            background-color: #2ecc71;
             color: white;
+            z-index: 1000;
         }
 
         #noBtn {
-            background-color: #888;
+            background-color: #e74c3c;
             color: white;
-            position: absolute; /* Needed for the movement magic */
+            position: absolute;
         }
 
-        #responseImage {
-            width: 200px;
-            margin-bottom: 20px;
-        }
-
-        .hidden {
+        .success-msg {
             display: none;
         }
     </style>
@@ -71,69 +77,85 @@
 <body>
 
     <div class="container" id="mainContainer">
-        <img id="responseImage" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute Bear">
+        <img id="main-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Asking">
         
-        <h1 id="questionText">Will you be my girlfriend? ❤️</h1>
+        <h1 id="questionText">Will you be my girlfriend? <br> (Choose wisely, I know where you live 👁️👄👁️)</h1>
 
-        <div class="buttons" id="btnGroup">
-            <button id="yesBtn" onclick="celebrate()">Yes!</button>
-            <button id="noBtn" onmouseover="moveButton()">No</button>
+        <div class="btn-container">
+            <button id="yesBtn" onclick="accepted()">Yes</button>
+            <button id="noBtn" onmouseover="moveAndChange()">No</button>
         </div>
     </div>
 
     <script>
-        function moveButton() {
-            const noBtn = document.getElementById('noBtn');
-            
-            // Generate random positions within the screen
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const mainGif = document.getElementById('main-gif');
+        const questionText = document.getElementById('questionText');
+
+        let noClickCount = 0;
+        const funnyTexts = [
+            "Are you sure?", 
+            "Think again!", 
+            "Paisa dunga!", 
+            "I'll tell your mom!", 
+            "Ek baar aur soch lo...", 
+            "Galat button hai ye!", 
+            "Dil tod diya mera 💔",
+            "Bhagwan dekh raha hai"
+        ];
+
+        function moveAndChange() {
+            // 1. Make the button run away
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
-        }
 
-        function celebrate() {
-            const container = document.getElementById('mainContainer');
-            const img = document.getElementById('responseImage');
-            const text = document.getElementById('questionText');
-            const buttons = document.getElementById('btnGroup');
+            // 2. Change the text of No button
+            const randomText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
+            noBtn.innerText = randomText;
 
-            // Change content after clicking "Yes"
-            text.innerHTML = "Yay! You made me the happiest person! 🥰";
-            img.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/T86lbVQOQDsQY4GkZ3/giphy.gif"; 
-            buttons.classList.add('hidden');
+            // 3. Make the YES button grow bigger (Subliminal messaging lol)
+            noClickCount++;
+            let newSize = 1 + (noClickCount * 0.2);
+            yesBtn.style.transform = `scale(${newSize})`;
             
-            // Change background color to celebrate
-            document.body.style.backgroundColor = "#ffb3c1";
-            
-            // Basic Confetti Effect (optional)
-            for(let i=0; i<50; i++) {
-                createHeart();
+            // 4. Change GIF to something sadder
+            if(noClickCount === 5) {
+                mainGif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/9Y5BbDSkSTiY8/giphy.gif";
             }
         }
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
-            heart.style.position = 'fixed';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = '100vh';
-            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            heart.style.animation = `float ${Math.random() * 3 + 2}s linear forwards`;
-            document.body.appendChild(heart);
+        function accepted() {
+            document.getElementById('mainContainer').innerHTML = `
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/T86lbVQOQDsQY4GkZ3/giphy.gif" style="width:250px; border-radius:20px;">
+                <h1 style="color: #ff4d6d;">Hehe, I knew it! ❤️</h1>
+                <p>Ab party kab hai? 🎉</p>
+                <button onclick="location.reload()" style="background:#888; color:white; font-size:12px; padding:5px 10px;">Reset (In case you want to say Yes again)</button>
+            `;
+            document.body.style.backgroundColor = "#ffdae0";
             
-            setTimeout(() => heart.remove(), 5000);
+            // Confetti effect
+            for(let i=0; i<100; i++) { createEmoji('💖'); createEmoji('🍕'); }
+        }
+
+        function createEmoji(emoji) {
+            const el = document.createElement('div');
+            el.innerHTML = emoji;
+            el.style.position = 'fixed';
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.top = '100vh';
+            el.style.fontSize = '25px';
+            el.style.animation = `float ${Math.random() * 2 + 3}s linear forwards`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 4000);
         }
     </script>
 
     <style>
-        /* Floating hearts animation */
         @keyframes float {
-            to {
-                transform: translateY(-110vh) rotate(360deg);
-                opacity: 0;
-            }
+            to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
     </style>
 
